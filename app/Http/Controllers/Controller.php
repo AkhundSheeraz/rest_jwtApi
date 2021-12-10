@@ -12,12 +12,22 @@ class Controller extends BaseController
         return response()->json(['msg' => $msg,'data' => $data],$statusCode);
     }
 
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $time, $data = null)
     {
+
+        if($data){
+            return response()->json([
+                'data' => $data,
+                'token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::factory()->getTTL() * $time
+            ], 200);
+        }
+
         return response()->json([
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * $time
         ], 200);
     }
 }
